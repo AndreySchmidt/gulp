@@ -4,3 +4,11 @@ sudo npm i --global gulp-cli
 
 npm i webpack-stream style-loader css-loader --save-dev
 npm i gulp-babel @babel/core @babel/preset-env --save-dev
+npm i air-datepicker -S
+
+// сжимает изображения по весу
+npm i gulp-imagemin@7 --save-dev
+// чтобы игнорировать уже обработанные картинки, файлы
+npm i gulp-changed --save-dev
+
+npm i gulp-sass-glob --save-dev

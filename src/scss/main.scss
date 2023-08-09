@@ -1,2 +1,5 @@
 @import "./blocks/header";
 @import "./blocks/footer";
+
+// sassGlob могу так:
+@import "./blocks/*.scss";
