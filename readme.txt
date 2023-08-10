@@ -12,3 +12,16 @@ npm i gulp-imagemin@7 --save-dev
 npm i gulp-changed --save-dev
 
 npm i gulp-sass-glob --save-dev
+
+// для браузеров префиксы стилей
+npm i gulp-autoprefixer --save-dev
+
+// для минификации css
+npm i gulp-csso --save-dev
+
+ npm i gulp-htmlclean --save-dev
+
+//webp генерация картинок, для браузеров, которые поддерживают формат
+ npm i gulp-webp gulp-webp-html gulp-webp-css --save-dev
+
+

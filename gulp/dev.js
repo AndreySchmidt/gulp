@@ -6,12 +6,11 @@ const server = require("gulp-server-livereload");
 const clean = require("gulp-clean");
 const fs = require("fs");
 const sourceMaps = require("gulp-sourcemaps");
-// const groupMedia = require("gulp-group-css-media-queries");
 const plumber = require("gulp-plumber");
 const notify = require("gulp-notify");
 const webpack = require("webpack-stream");
-const babel = require("gulp-babel");
-const imageMin = require("gulp-imagemin");
+// const babel = require("gulp-babel");
+// const imageMin = require("gulp-imagemin");
 const changed = require("gulp-changed");
 
 const plumberConfig = (title) => {
@@ -24,7 +23,7 @@ const plumberConfig = (title) => {
   };
 };
 
-gulp.task("clean", function (done) {
+gulp.task("clean:dev", function (done) {
   if (fs.existsSync(".build/")) {
     return gulp.src("./build/", { read: false }).pipe(clean({ force: true }));
   }
@@ -37,59 +36,61 @@ const fileIncludeSettings = {
   basepath: "@file",
 };
 
-gulp.task("html", function () {
+gulp.task("html:dev", function () {
   return gulp
     .src(["./src/html/**/*.html", "!./src/html/blocks/*.html"])
     .pipe(changed("./build/"))
     .pipe(plumber(plumberConfig("Html")))
-    .pipe(fileInclude(fileIncludeSettings).pipe(gulp.dest("./build/")));
+    .pipe(fileInclude(fileIncludeSettings))
+    .pipe(gulp.dest("./build/"));
 });
 
-gulp.task("sass", function () {
+gulp.task("sass:dev", function () {
+  return gulp
+    .src("./src/scss/*.scss")
+    .pipe(changed("./build/css/"))
+    .pipe(plumber(plumberConfig("Styles")))
+    .pipe(sourceMaps.init())
+    .pipe(sass())
+    .pipe(sourceMaps.write())
+    .pipe(sassGlob())
+    .pipe(gulp.dest("./build/css"));
+});
+
+gulp.task("img:dev", function () {
   return (
     gulp
-      .src("./src/scss/*.scss")
-      .pipe(changed("./build/css/"))
-      .pipe(plumber(plumberConfig("Styles")))
-      .pipe(sourceMaps.init())
-      .pipe(sass())
-      // .pipe(groupMedia())
-      .pipe(sourceMaps.write())
-      .pipe(sassGlob())
-      .pipe(gulp.dest("./build/css"))
+      .src("./src/img/**/*")
+      .pipe(changed("./build/img/"))
+      // .pipe(imageMin({ verbose: true }))
+      .pipe(gulp.dest("./build/img/"))
   );
 });
 
-gulp.task("img", function () {
-  return gulp
-    .src("./src/img/**/*")
-    .pipe(changed("./build/img/"))
-    .pipe(imageMin({ verbose: true }))
-    .pipe(gulp.dest("./build/img/"));
-});
-
-gulp.task("fonts", function () {
+gulp.task("fonts:dev", function () {
   return gulp
     .src("./src/fonts/**/*")
     .pipe(changed("./build/fonts/"))
     .pipe(gulp.dest("./build/fonts/"));
 });
 
-gulp.task("files", function () {
+gulp.task("files:dev", function () {
   return gulp
     .src("./src/files/**/*")
     .pipe(changed("./build/files/"))
     .pipe(gulp.dest("./build/files/"));
 });
 
-gulp.task("js", function () {
-  return gulp
-    .src("./src/js/*.js")
-    .pipe(changed("./build/js/"))
-    .pipe(plumber(plumberConfig("Js")))
-    .pipe(babel())
-    .pipe(webpack(require("./../webpack.config.js")))
-    .pipe(gulp.dest("./build/js/"));
+gulp.task("js:dev", function () {
+  return (
+    gulp
+      .src("./src/js/*.js")
+      .pipe(changed("./build/js/"))
+      .pipe(plumber(plumberConfig("Js")))
+      // .pipe(babel())
+      .pipe(webpack(require("./../webpack.config.js")))
+      .pipe(gulp.dest("./build/js/"))
+  );
 });
 
 const serverOptions = {
@@ -97,15 +98,15 @@ const serverOptions = {
   open: true,
 };
 
-gulp.task("server", function () {
+gulp.task("server:dev", function () {
   return gulp.src("./build/").pipe(server(serverOptions));
 });
 
-gulp.task("watch", function () {
-  gulp.watch("./src/scss/**/*.scss", gulp.parallel("sass"));
-  gulp.watch("./src/html/**/*.html", gulp.parallel("html"));
-  gulp.watch("./src/img/**/*", gulp.parallel("img"));
-  gulp.watch("./src/fonts/**/*", gulp.parallel("fonts"));
-  gulp.watch("./src/files/**/*", gulp.parallel("files"));
-  gulp.watch("./src/js/**/*.js", gulp.parallel("js"));
+gulp.task("watch:dev", function () {
+  gulp.watch("./src/scss/**/*.scss", gulp.parallel("sass:dev"));
+  gulp.watch("./src/html/**/*.html", gulp.parallel("html:dev"));
+  gulp.watch("./src/img/**/*", gulp.parallel("img:dev"));
+  gulp.watch("./src/fonts/**/*", gulp.parallel("fonts:dev"));
+  gulp.watch("./src/files/**/*", gulp.parallel("files:dev"));
+  gulp.watch("./src/js/**/*.js", gulp.parallel("js:dev"));
 });
