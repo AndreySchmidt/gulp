@@ -36,10 +36,11 @@ const fileIncludeSettings = {
   basepath: "@file",
 };
 
+// , { hasChanged: changed.compareContents } это надо для пересборки страницы, если в импортах изменения
 gulp.task("html:dev", function () {
   return gulp
     .src(["./src/html/**/*.html", "!./src/html/blocks/*.html"])
-    .pipe(changed("./build/"))
+    .pipe(changed("./build/", { hasChanged: changed.compareContents }))
     .pipe(plumber(plumberConfig("Html")))
     .pipe(fileInclude(fileIncludeSettings))
     .pipe(gulp.dest("./build/"));

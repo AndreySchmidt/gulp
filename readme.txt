@@ -22,6 +22,8 @@ npm i gulp-csso --save-dev
  npm i gulp-htmlclean --save-dev
 
 //webp генерация картинок, для браузеров, которые поддерживают формат
+// gulp-webp-html пакет для авто добавления тегов picture, source
  npm i gulp-webp gulp-webp-html gulp-webp-css --save-dev
+
 
 
